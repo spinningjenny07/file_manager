@@ -1,3 +1,5 @@
+/*jslint esversion:6 */
+
 var fs = require('fs');
 
 var useStdin = function() {
@@ -17,7 +19,7 @@ var useStdin = function() {
 			//replace <filename>
 			findReplace(inputSplit[1], inputSplit[2], inputSplit[3]);
 		} else if (inputSplit[0] == "grep") {
-			findLine(inputSplit[1], inputSplit[2]);
+			grepFile(inputSplit[1], inputSplit[2]);
 		}
 	}
 }
@@ -81,20 +83,21 @@ function findReplace(fileName, oldWord, newWord) {
 	});
 }
 
-function findLine (fileName, word) {
+function grepFile (fileName, search) {
 	fs.readFile (fileName, function(err, data) {
 		if (err) {
 			return console.log(err);
 		}
 
-		var arr = data.toString.split("\n");
-		for (i = 0; i < arr.length; i++) {
-			if (arr[i] === word) {
-				return console.log(arr[i]);
+		data = data.toString().split("\n");
+		for (var str of data) {
+			if (str.includes(search)) {
+				return console.log(str);
 			}
 		}
 	});
 }
+
 
 process.stdin.on('readable', useStdin);
 
@@ -118,6 +121,8 @@ Your assignment is to implement the following functionality:
 			print out all of the lines in hello.txt that contain "hello"
 		> grep what.txt there
 			print out all of the lines in what.txt that contain "there"
+
+
 
 	Bonus work:
 		* Ask for confirmation before deleting a file
